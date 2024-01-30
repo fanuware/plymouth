@@ -4,3 +4,4 @@
 Theme=spinner
 ShowDelay=0
 DeviceTimeout=8
+DisableToggleSplash=false

@@ -114,6 +114,7 @@ typedef struct
         uint32_t                should_force_details : 1;
         uint32_t                should_force_default_splash : 1;
         uint32_t                splash_is_becoming_idle : 1;
+        uint32_t                is_disable_toggle_splash : 1;
 
         char                   *override_splash_path;
         char                   *system_default_splash_path;
@@ -342,6 +343,9 @@ load_settings (state_t    *state,
                 ply_set_device_scale (strtoul (scale_string, NULL, 0));
                 free (scale_string);
         }
+
+        state->is_disable_toggle_splash = ply_key_file_get_bool(key_file, "Daemon", "DisableToggleSplash");
+        ply_trace ("Disable toggle between splash and details is set to %s", state->is_disable_toggle_splash ? "true" : "false");
 
         settings_loaded = true;
 out:
@@ -1598,6 +1602,10 @@ static void
 on_escape_pressed (state_t *state)
 {
         ply_trace ("escape key pressed");
+        if (state->is_disable_toggle_splash) {
+                return;
+        }
+
         bool has_vt_consoles = true;
 
         if (state->local_console_terminal != NULL) {
